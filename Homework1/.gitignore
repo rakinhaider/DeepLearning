@@ -1,0 +1,13 @@
+# Ignore submission files
+chowdhurymohammadrakin_haider_hw1*
+
+# Ignore dummy projects
+LearnPyTroch/*
+
+# Ignore homework specifications
+hw1.pdf
+hw1.tex
+
+# Ignore data and log files
+*/data/*
+log

@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH -A scholar
+# for this course, myqueuename will be either scholar or gpu
+#SBATCH --nodes=1 
+#SBATCH --cpus-per-task=10
+#SBATCH --time=2:30:00
+#SBATCH --job-name hw1_experiment
+
+# Load our conda environment
+module load learning/conda-5.1.0-py36-gpu
+source activate DPLClass
+
+# Run my code 
+sh ./run.sh
