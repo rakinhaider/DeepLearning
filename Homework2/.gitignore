@@ -1,0 +1,11 @@
+# Ignore submission files
+chowdhurymohammadrakin_haider_hw*
+
+# Ignore homework specifications
+hw*.pdf
+hw*.tex
+hw2_skeleton.zip
+
+# Ignore data and log files
+*/data/*
+**/log
