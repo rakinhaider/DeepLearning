@@ -1,6 +1,7 @@
 # All imports
 import torch
 import math
+from torch.nn import Conv2d, MaxPool2d, Linear
 
 
 # =============================================================================
@@ -74,7 +75,26 @@ class DualCNN(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        self.num_input_channels: int
+        self.num_output_channels: int
+        self.num_internal_channels: int
+        self.conv_kernel: int
+        self.conv_stride: int
+        self.pool_kernel: int
+        self.pool_stride: int
+        self.padding: int
+
+        self.conv1 = Conv2d(in_channels=num_input_channels,
+                            out_channels=num_internal_channels,
+                            kernel_size=conv_kernel,
+                            stride=conv_stride, padding=padding)
+        self.pool = MaxPool2d(kernel_size=pool_kernel,
+                              stride=pool_stride,
+                              padding=padding)
+        self.conv2 = Conv2d(in_channels=num_internal_channels,
+                            out_channels=num_output_channels,
+                            kernel_size=conv_kernel,
+                            stride=conv_stride, padding=padding)
 
     def forward(
         self,
@@ -97,7 +117,13 @@ class DualCNN(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        x = torch.relu(self.conv1(input))
+        x = self.pool(x)
+        x = torch.relu(self.conv2(x))
+        x = self.pool(x)
+
+        return x
+
 
     def initialize(
         self,

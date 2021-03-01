@@ -46,10 +46,10 @@ class RotateProtocal(Protocol):
         - output :
             Output.
         """
-        # /
-        # VIRTUAL
-        # /
-        ...
+        if degree % 90 == 0:
+            return onp.rot90(input, degree // 90)
+        else:
+            raise ValueError
 
 
 class FlipProtocal(Protocol):
@@ -83,10 +83,14 @@ class FlipProtocal(Protocol):
         - output :
             Output.
         """
-        # /
-        # VIRTUAL
-        # /
-        ...
+        if number == 0:
+            return onp.copy(input)
+        elif number == 1:
+            return onp.flip(input, 1)
+        elif number == 2:
+            return onp.flip(input, 0)
+        else:
+            return onp.flip(input)
 
 
 class InvariantSubspace(
@@ -185,8 +189,17 @@ class InvariantSubspace(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
+        onehot = onp.zeros(self.numel)
+        onehot[index] = 1
 
-        temp = onp.zeros(self.numel)
-        temp[index] = 1
-        return temp
+        reynold = onp.zeros(self.numel)
+
+        for i in range(4):
+            reynold += self.rotate(onehot, degree=90*i)
+
+        for i in range(4):
+            reynold += self.flip(onehot, number=i)
+
+        reynold = reynold / 8
+        return reynold
         # raise NotImplementedError

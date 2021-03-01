@@ -121,7 +121,7 @@ class SGD(
                     # /
                     # YOU SHOULD FILL IN THIS FUNCTION
                     # /
-                    raise NotImplementedError
+                    gradient += 2 * self.weight_decay * parameter.data
                 else:
                     pass
 
@@ -167,7 +167,24 @@ class Momentum(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        self.lr: float
+        self.weight_decay: float
+        self.momentum: float
+
+        # Save necessary attributes.
+        self.lr = lr
+        self.weight_decay = weight_decay
+        self.momentum = momentum
+
+        # Super call.
+        super(Momentum, self).__init__(parameters, dict())
+
+        # Initialize velocity vector
+        self.velocity = []
+        for group in self.param_groups:
+            self.velocity.append([])
+            for param in group['params']:
+                self.velocity[-1].append(torch.zeros(param.shape))
 
     @torch.no_grad()
     def prev(
@@ -214,7 +231,30 @@ class Momentum(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        group: Dict[str, Any]
+        parameter: torch.nn.parameter.Parameter
+        gradient: torch.Tensor
+
+        # Traverse parameters of each groups.
+        for i, group in enumerate(self.param_groups):
+            for j, parameter in enumerate(group['params']):
+                # Get gradient without weight decaying.
+                if (parameter.grad is None):
+                    continue
+                else:
+                    gradient = parameter.grad
+
+                if self.weight_decay != 0:
+                    gradient += 2 * self.weight_decay * parameter.data
+
+                # Gradient Decay.
+                self.velocity[i][j] = self.momentum * self.velocity[i][j]
+                self.velocity[i][j] += self.lr * gradient
+                parameter.data.add_(
+                    self.velocity[i][j],
+                    alpha=-1,
+                )
+        return None
 
 
 class Nesterov(
@@ -291,7 +331,33 @@ class Adam(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        self.lr: float
+        self.weight_decay: float
+        self.beta1: float
+        self.beta2: float
+        self.epsilon: float
+
+        # Save necessary attributes.
+        self.lr = lr
+        self.weight_decay = weight_decay
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.epsilon = epsilon
+        self.beta1_powt = 1
+        self.beta2_powt = 1
+
+        # Super call.
+        super(Adam, self).__init__(parameters, dict())
+
+        # Initialize m1, m2 vector
+        self.m1 = []
+        self.m2 = []
+        for group in self.param_groups:
+            self.m1.append([])
+            self.m2.append([])
+            for param in group['params']:
+                self.m1[-1].append(torch.zeros(param.shape))
+                self.m2[-1].append(torch.zeros(param.shape))
 
     @torch.no_grad()
     def prev(
@@ -338,4 +404,43 @@ class Adam(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        group: Dict[str, Any]
+        parameter: torch.nn.parameter.Parameter
+        gradient: torch.Tensor
+
+        self.beta1_powt *= self.beta1
+        self.beta2_powt *= self.beta2
+
+        # Traverse parameters of each groups.
+        for i, group in enumerate(self.param_groups):
+            for j, parameter in enumerate(group['params']):
+                # Get gradient without weight decaying.
+                if (parameter.grad is None):
+                    continue
+                else:
+                    gradient = parameter.grad
+
+                if self.weight_decay != 0:
+                    gradient += 2 * self.weight_decay * parameter.data
+
+                m1 = self.m1[i][j]
+                m1 = self.beta1 * m1 + (1 - self.beta1) * gradient
+                self.m1[i][j] = m1
+
+                m2 = self.m2[i][j]
+                m2 = self.beta2 * m2 + (1 - self.beta2) * gradient
+                self.m2[i][j] = m2
+
+                u1 = m1.div(1 - self.beta1_powt)
+                print('u1', u1)
+                u2 = m2.div(1 - self.beta2_powt)
+                print('u2', u2)
+                update = (torch.sqrt(u2) + self.epsilon)
+                print('update denom', update)
+                update = u1.div(update)
+                print('update', update)
+                parameter.data.add_(
+                    update,
+                    alpha=-self.lr,
+                )
+        return None

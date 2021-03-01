@@ -51,6 +51,7 @@ class GInvariantLinear(
         self.rng_cpu: torch.Generator
         self.rng_gpu: torch.Generator
         self.eigenvectors: torch.Tensor
+        self.num_inputs: int
 
         # Super call.
         super(GInvariantLinear, self).__init__(len(eigenvectors), num_outputs)
@@ -59,6 +60,7 @@ class GInvariantLinear(
         self.rng_cpu = rng_cpu
         self.rng_gpu = rng_gpu
         self.register_buffer("eigenvectors", eigenvectors)
+        self.num_inputs = num_inputs
 
     def forward(
         self,
@@ -81,4 +83,8 @@ class GInvariantLinear(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        raise NotImplementedError
+        wt = torch.zeros(self.num_inputs)
+        for i, vt in enumerate(self.eigenvectors):
+            wt += self.weight[i] * vt
+
+        return wt.dot(input) + self.bias

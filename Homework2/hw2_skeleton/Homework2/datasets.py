@@ -121,6 +121,13 @@ class MNISTDataset(
             (test_images, test_labels),
         ) = torch.load(os.path.join(root, "mnist.ptds"))
 
+        # Remove before submission
+        if (num_samples < 0):
+            pass
+        else:
+            train_images = train_images[0:num_samples]
+            train_labels = train_labels[0:num_samples]
+
         # Check memory format.
         assert (
             train_images.size()[1:] == (self.HEIGHT, self.WIDTH)
@@ -148,12 +155,15 @@ class MNISTDataset(
         else:
             pass
 
+        # Uncomment before submission.
+        """
         # Truncate.
         if (num_samples < 0):
             pass
         else:
             train_images = train_images[0:num_samples]
             train_labels = train_labels[0:num_samples]
+        """
 
         # Randomly shuffle labels.
         if (shuffle):
