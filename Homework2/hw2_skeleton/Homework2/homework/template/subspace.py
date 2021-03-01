@@ -189,6 +189,7 @@ class InvariantSubspace(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
+        return onp.zeros(self.numel)
         onehot = onp.zeros(self.numel)
         onehot[index] = 1
 

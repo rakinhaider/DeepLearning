@@ -233,6 +233,7 @@ class Main(
         # Get randomness.
         self.rng_cpu = torch.Generator("cpu")
         if torch.cuda.is_available():
+            print('Cuda is available.')
             self.rng_gpu = torch.Generator("cuda")
         # Remove before submission.
         else:
