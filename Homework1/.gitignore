@@ -2,7 +2,7 @@
 chowdhurymohammadrakin_haider_hw1*
 
 # Ignore dummy projects
-LearnPyTroch/*
+**/LearnPyTorch/*
 
 # Ignore homework specifications
 hw1.pdf
