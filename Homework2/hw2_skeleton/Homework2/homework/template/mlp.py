@@ -83,8 +83,6 @@ class GInvariantLinear(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        wt = torch.zeros(self.num_inputs)
-        for i, vt in enumerate(self.eigenvectors):
-            wt += self.weight[i] * vt
+        wt = self.weight.matmul(self.eigenvectors)
 
-        return wt.dot(input) + self.bias
+        return input.matmul(wt.t()) + self.bias

@@ -151,7 +151,6 @@ class InvariantSubspace(
             transformed_buf,
             axis=1,
         )
-
         # Eigenvectors is used to describe the transformation subspace.
         self.eigenvalues, self.eigenvectors = onp.linalg.eig(
             self.transform_mat,
