@@ -182,7 +182,7 @@ class Visualize(
                 "mnist_{:d}-{:d}-{:s}-{:s}-{:d}-cnn_{:d}_{:d}-{:s}-{:s}-{:s}" \
                 "-{:s}".format(
                     num_samples, random_seed,
-                    "n" if (normalize) else "0",
+                    # "n" if (normalize) else "0",
                     "s" if (shuffle) else "0",
                     batch_size,
                     kernel, stride,
@@ -197,7 +197,7 @@ class Visualize(
                 "mnist_{:d}-{:d}-{:s}-{:s}-{:d}-mlp_{:s}-{:s}-{:s}-{:s}" \
                 "-{:s}".format(
                     num_samples, random_seed,
-                    "n" if (normalize) else "0",
+                    # "n" if (normalize) else "0",
                     "s" if (shuffle) else "0",
                     batch_size,
                     "g" if (ginvariant) else "0",

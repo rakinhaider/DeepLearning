@@ -189,18 +189,18 @@ class InvariantSubspace(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        return onp.zeros(self.numel)
+        #return onp.zeros(self.numel)
         onehot = onp.zeros(self.numel)
         onehot[index] = 1
-
-        reynold = onp.zeros(self.numel)
+        onehot = onp.reshape(onehot, self.shape)
+        reynold = onp.zeros_like(onehot)
 
         for i in range(4):
-            reynold += self.rotate(onehot, degree=90*i)
+            reynold += self.rotate(onehot, degree=i)
 
         for i in range(4):
             reynold += self.flip(onehot, number=i)
 
         reynold = reynold / 8
-        return reynold
+        return reynold.flatten()
         # raise NotImplementedError
