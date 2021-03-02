@@ -10,7 +10,7 @@
 # To run on GPU, replace device variable from "cpu" to "cuda".
 sbatch="--sbatch"
 student="template"
-device="gpu"
+device="cuda"
 samples="-1"
 seed="0"
 epochs="100"

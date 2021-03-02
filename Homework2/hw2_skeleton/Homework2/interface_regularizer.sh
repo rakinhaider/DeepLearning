@@ -8,9 +8,9 @@
 # It will automatically generate `sbatch` submission file and submit, so you
 # do not need to write submission commands by yourself.
 # To run on GPU, replace device variable from "cpu" to "cuda".
-sbatch=""
-student="answer"
-device="cpu"
+sbatch="--sbatch"
+student="template"
+device="cuda"
 samples="-1"
 seed="0"
 epochs="100"
