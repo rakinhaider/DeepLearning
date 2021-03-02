@@ -8,3 +8,4 @@ hw2_skeleton.zip
 
 # Ignore data and log files
 **/Data/*
+**/logs/*
