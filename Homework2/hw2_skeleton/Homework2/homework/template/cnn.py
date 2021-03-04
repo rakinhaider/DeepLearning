@@ -98,8 +98,6 @@ class DualCNN(
                             stride=conv_stride, padding=padding)
         cudnn.deterministic = True
         cudnn.benchmark = False
-        logging.basicConfig(filename='nan.log', filemode='w',
-                            level=logging.DEBUG)
         self.nan_count = 0
 
     def forward(
