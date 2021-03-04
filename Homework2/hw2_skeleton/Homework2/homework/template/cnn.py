@@ -2,6 +2,7 @@
 import torch
 import math
 from torch.nn import Conv2d, MaxPool2d, Linear
+import torch.backends.cudnn as cudnn
 
 
 # =============================================================================
@@ -95,6 +96,8 @@ class DualCNN(
                             out_channels=num_output_channels,
                             kernel_size=conv_kernel,
                             stride=conv_stride, padding=padding)
+        cudnn.deterministic = True
+        cudnn.benchmark = False
 
     def forward(
         self,
