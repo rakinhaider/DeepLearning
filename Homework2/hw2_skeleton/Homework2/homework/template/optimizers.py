@@ -462,31 +462,31 @@ class Adam(
                 m1 = self.m1[i][j]
                 m1 = self.beta1 * m1 + (1 - self.beta1) * gradient
                 self.m1[i][j] = m1
-                print('m1')
-                print(m1)
+                # print('m1')
+                # print(m1)
                 m2 = self.m2[i][j]
                 m2 = self.beta2 * m2
                 m2 += (1 - self.beta2) * torch.square(gradient)
                 self.m2[i][j] = m2
-                print('m2')
-                print(m2)
+                # print('m2')
+                # print(m2)
 
                 u1 = m1.div(1 - self.beta1_powt)
-                print('u1')
-                print(u1)
+                # print('u1')
+                # print(u1)
                 u2 = m2.div(1 - self.beta2_powt)
-                print('u2')
-                print(u2)
+                # print('u2')
+                # print(u2)
                 update = (torch.sqrt(u2) + self.epsilon)
-                print('update denom')
-                print(update)
+                # print('update denom')
+                # print(update)
                 update = u1.div(update)
-                print('update')
-                print(update)
+                # print('update')
+                # print(update)
                 parameter.data.add_(
                     update,
                     alpha=-self.lr,
                 )
-                print('param')
-                print(parameter.data)
+                # print('param')
+                # print(parameter.data)
         return None
