@@ -5,6 +5,7 @@ from typing import Iterable
 from typing import Callable
 from typing import Optional
 import torch
+import logging
 
 
 # =============================================================================
@@ -378,6 +379,8 @@ class Adam(
         # Initialize m1, m2 vector
         self.m1 = []
         self.m2 = []
+        self._u1 = []
+        self._u2 = []
         for group in self.param_groups:
             self.m1.append([])
             self.m2.append([])
@@ -439,6 +442,10 @@ class Adam(
         self.beta1_powt *= self.beta1
         self.beta2_powt *= self.beta2
 
+        if torch.isnan(self.beta1_powt) or torch.isnan(self.beta2_powt):
+            print('Exponential reached NaN')
+            exit()
+
         # Traverse parameters of each groups.
         for i, group in enumerate(self.param_groups):
             for j, parameter in enumerate(group['params']):
@@ -454,21 +461,31 @@ class Adam(
                 m1 = self.m1[i][j]
                 m1 = self.beta1 * m1 + (1 - self.beta1) * gradient
                 self.m1[i][j] = m1
-
+                print('m1')
+                print(m1)
                 m2 = self.m2[i][j]
-                m2 = self.beta2 * m2 + (1 - self.beta2) * gradient
+                m2 = self.beta2 * m2
+                m2 += (1 - self.beta2) * torch.square(gradient)
                 self.m2[i][j] = m2
+                print('m2')
+                print(m2)
 
                 u1 = m1.div(1 - self.beta1_powt)
-                # print('u1', u1)
+                print('u1')
+                print(u1)
                 u2 = m2.div(1 - self.beta2_powt)
-                # print('u2', u2)
+                print('u2')
+                print(u2)
                 update = (torch.sqrt(u2) + self.epsilon)
-                # print('update denom', update)
+                print('update denom')
+                print(update)
                 update = u1.div(update)
-                # print('update', update)
+                print('update')
+                print(update)
                 parameter.data.add_(
                     update,
                     alpha=-self.lr,
                 )
+                print('param')
+                print(parameter.data)
         return None

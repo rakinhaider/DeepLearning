@@ -19,7 +19,13 @@ class TestCNN(unittest.TestCase):
         x = torch.randint(0, 5, (1, 1, 4, 4), dtype=torch.float32)
         print(x)
 
-        print(cnn(x))
+        forward = cnn(x)
+        result = torch.tensor([[[1453., 1621., 1621., 1621.],
+                                [1453., 1621., 1621., 1621.],
+                                [1453., 1621., 1621., 1621.],
+                                [1453., 1621., 1621., 1621.]]])
+        result = result.repeat([1, 3, 1, 1])
+        assert torch.equal(result, forward)
 
     def test_init(self):
         cnn = DualCNN(
