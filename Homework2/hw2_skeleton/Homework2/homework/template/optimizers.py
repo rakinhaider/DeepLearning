@@ -460,13 +460,13 @@ class Adam(
                 self.m2[i][j] = m2
 
                 u1 = m1.div(1 - self.beta1_powt)
-                print('u1', u1)
+                # print('u1', u1)
                 u2 = m2.div(1 - self.beta2_powt)
-                print('u2', u2)
+                # print('u2', u2)
                 update = (torch.sqrt(u2) + self.epsilon)
-                print('update denom', update)
+                # print('update denom', update)
                 update = u1.div(update)
-                print('update', update)
+                # print('update', update)
                 parameter.data.add_(
                     update,
                     alpha=-self.lr,

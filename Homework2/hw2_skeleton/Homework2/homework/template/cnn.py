@@ -117,11 +117,20 @@ class DualCNN(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        print(self.conv1)
+        # print(self.conv1)
+        # print(list(self.conv1.named_parameters()))
         x = torch.relu(self.conv1(input))
+        # print(self.conv1(input))
+        # print(x)
         x = self.pool(x)
+        # print('pooled', x)
+        # print(x.shape)
+        # print(list(self.conv2.named_parameters()))
+        # print(self.conv2(x))
         x = torch.relu(self.conv2(x))
+        # print(x)
         x = self.pool(x)
+        # print(x)
 
         return x
 
