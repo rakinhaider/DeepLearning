@@ -3,7 +3,7 @@ import torch
 import math
 from torch.nn import Conv2d, MaxPool2d, Linear
 import torch.backends.cudnn as cudnn
-
+import logging
 
 # =============================================================================
 # *****************************************************************************
@@ -98,6 +98,9 @@ class DualCNN(
                             stride=conv_stride, padding=padding)
         cudnn.deterministic = True
         cudnn.benchmark = False
+        logging.basicConfig(filename='nan.log', filemode='w',
+                            level=logging.DEBUG)
+        self.nan_count = 0
 
     def forward(
         self,
@@ -120,18 +123,20 @@ class DualCNN(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
-        # print(self.conv1)
-        # print(list(self.conv1.named_parameters()))
         x = torch.relu(self.conv1(input))
-        # print(x.shape)
         x = self.pool(x)
-        # print('pooled shape', x.shape)
-        # print(x)
         x = torch.relu(self.conv2(x))
-        # print('conv shape', x.shape)
-        # print(x)
         x = self.pool(x)
-        # print('pooled shape', x.shape)
+
+        if torch.any(torch.isnan(x)):
+            logging.debug('conv1 weight')
+            logging.debug(list(self.conv1.named_parameters()))
+            logging.debug('conv2 weight')
+            logging.debug(list(self.conv2.named_parameters()))
+            logging.debug(x)
+            self.nan_count += 1
+            if self.nan_count >=50:
+                exit()
         return x
 
 
