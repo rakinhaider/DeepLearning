@@ -5,6 +5,7 @@ from typing import Iterable
 from typing import Callable
 from typing import Optional
 import torch
+import math
 import logging
 
 
@@ -442,7 +443,7 @@ class Adam(
         self.beta1_powt *= self.beta1
         self.beta2_powt *= self.beta2
 
-        if torch.isnan(self.beta1_powt) or torch.isnan(self.beta2_powt):
+        if math.isnan(self.beta1_powt) or math.isnan(self.beta2_powt):
             print('Exponential reached NaN')
             exit()
 
