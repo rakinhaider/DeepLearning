@@ -19,10 +19,10 @@ epochs="100"
 python main.py ${sbatch} \
     --student ${student} \
     --num-samples ${samples} --random-seed ${seed} \
-    --kernel 3 --stride 3 --cnn \
+    --kernel 3 --stride 3 --cnn --learning-rate 0.01\
     --num-epochs ${epochs} --device ${device}
 python main.py ${sbatch} \
     --student ${student} \
     --num-samples ${samples} --random-seed ${seed} \
-    --kernel 14 --stride 1 --cnn \
+    --kernel 14 --stride 1 --cnn --learning-rate 0.01\
     --num-epochs ${epochs} --device ${device}

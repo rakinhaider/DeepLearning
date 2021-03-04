@@ -20,5 +20,5 @@ epochs="100"
 python main.py ${sbatch} \
     --student ${student} \
     --num-samples ${samples} --random-seed ${seed} \
-    --kernel 5 --stride 1 --cnn \
-    --num-epochs ${epochs} --device ${device}
+    --kernel 5 --stride 1 --cnn --learning-rate 0.01\
+    --num-epochs ${epochs} --device ${device} 

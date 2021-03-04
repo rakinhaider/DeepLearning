@@ -20,12 +20,12 @@ python main.py ${sbatch} \
     --student ${student} \
     --num-samples ${samples} --random-seed ${seed} \
     --shuffle --kernel 5 --stride 1 --cnn \
-    --num-epochs ${epochs} --device ${device}
+    --num-epochs ${epochs} --device ${device} --learning-rate 0.01
 
 
 # Run automatical mixed precision (must on GPU).
 python main.py ${sbatch} \
     --student ${student} \
     --num-samples ${samples} --random-seed ${seed} \
-    --kernel 5 --stride 1 --cnn --amprec \
+    --kernel 5 --stride 1 --cnn --amprec --learning-rate 0.01\
     --num-epochs ${epochs} --device cuda
