@@ -241,10 +241,10 @@ class MNISTClassification(
         onehots = onehots[labels]
 
         # Save output and target for final evaluation.
-        self.output_label_buf.extend(predictions.data.tolist())
-        self.target_label_buf.extend(labels.data.tolist())
-        self.output_proba_buf.extend(probabilities.data.tolist())
-        self.target_proba_buf.extend(onehots.data.tolist())
+        self.output_label_buf.append(predictions.data)
+        self.target_label_buf.append(labels.data)
+        self.output_proba_buf.append(probabilities.data)
+        self.target_proba_buf.append(onehots.data)
 
     def evaluaton(
         self,
@@ -262,10 +262,10 @@ class MNISTClassification(
         # /
         # ANNOTATE
         # /
-        self.output_proba_buf: List[List[float]]
-        self.output_label_buf: List[List[int]]
-        self.target_proba_buf: List[List[float]]
-        self.target_label_buf: List[List[int]]
+        self.output_proba_buf: List[torch.Tensor]
+        self.output_label_buf: List[torch.Tensor]
+        self.target_proba_buf: List[torch.Tensor]
+        self.target_label_buf: List[torch.Tensor]
 
         # Safety check.
         assert (
@@ -297,6 +297,10 @@ class MNISTClassification(
         # /
         # ANNOTATE
         # /
+        output_labels: List[float]
+        output_probas: List[float]
+        target_labels: List[float]
+        target_probas: List[float]
         acc: float
         loss: float
         prec_mic: float
@@ -322,70 +326,87 @@ class MNISTClassification(
         # Change flag.
         self.evaluating = self.EVALOFF
 
+        # Merge buffer
+        output_labels = torch.cat(
+            self.output_label_buf,
+            dim=0,
+        ).tolist()
+        output_probas = torch.cat(
+            self.output_proba_buf,
+            dim=0,
+        ).tolist()
+        target_labels = torch.cat(
+            self.target_label_buf,
+            dim=0,
+        ).tolist()
+        target_probas = torch.cat(
+            self.target_proba_buf,
+            dim=0,
+        ).tolist()
+
         # Compute accuracy.
         acc = balanced_accuracy_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
         )
 
         # Compute loss.
         loss = torch.nn.functional.cross_entropy(
-            torch.Tensor(self.output_proba_buf),
-            torch.LongTensor(self.target_label_buf),
+            torch.Tensor(output_probas), torch.LongTensor(target_labels),
         ).item()
 
         # Compute precision.
         prec_mic = precision_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="micro", zero_division=1,
         )
         prec_mac = precision_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="macro", zero_division=1,
         )
         prec_wtd = precision_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="weighted", zero_division=1,
         )
 
         # Compute recall.
         recl_mic = recall_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="micro", zero_division=1,
         )
         recl_mac = recall_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="macro", zero_division=1,
         )
         recl_wtd = recall_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="weighted", zero_division=1,
         )
 
         # Compute F1.
         f1_mic = f1_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="micro",
         )
         f1_mac = f1_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="macro",
         )
         f1_wtd = f1_score(
-            y_true=self.target_label_buf, y_pred=self.output_label_buf,
+            y_true=target_labels, y_pred=output_labels,
             average="weighted",
         )
 
         # Compute ROCAUC.
         rocauc_mic = roc_auc_score(
-            y_true=self.target_proba_buf, y_score=self.output_proba_buf,
+            y_true=target_probas, y_score=output_probas,
             average="micro",
         )
         rocauc_mac = roc_auc_score(
-            y_true=self.target_proba_buf, y_score=self.output_proba_buf,
+            y_true=target_probas, y_score=output_probas,
             average="macro",
         )
         rocauc_wtd = roc_auc_score(
-            y_true=self.target_proba_buf, y_score=self.output_proba_buf,
+            y_true=target_probas, y_score=output_probas,
             average="weighted",
         )
 

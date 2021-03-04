@@ -117,6 +117,7 @@ class DualCNN(
         # /
         # YOU SHOULD FILL IN THIS FUNCTION
         # /
+        print(self.conv1)
         x = torch.relu(self.conv1(input))
         x = self.pool(x)
         x = torch.relu(self.conv2(x))

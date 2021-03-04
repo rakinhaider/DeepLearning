@@ -184,7 +184,11 @@ class Momentum(
         for group in self.param_groups:
             self.velocity.append([])
             for param in group['params']:
-                self.velocity[-1].append(torch.zeros(param.shape))
+                print(param.device)
+                vel = torch.zeros(param.shape,
+                                  device=param.device)
+                self.velocity[-1].append(vel)
+
 
     @torch.no_grad()
     def prev(
@@ -378,8 +382,10 @@ class Adam(
             self.m1.append([])
             self.m2.append([])
             for param in group['params']:
-                self.m1[-1].append(torch.zeros(param.shape))
-                self.m2[-1].append(torch.zeros(param.shape))
+                vel = torch.zeros(param.shape, device=param.device)
+                self.m1[-1].append(vel)
+                vel = torch.zeros(param.shape, device=param.device)
+                self.m2[-1].append(vel)
 
     @torch.no_grad()
     def prev(
