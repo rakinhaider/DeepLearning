@@ -179,7 +179,7 @@ class Visualize(
         # Get title directly.
         if (cnn):
             return (
-                "mnist_{:d}-{:d}-{:s}-{:s}-{:d}-cnn_{:d}_{:d}-{:s}-{:s}-{:s}" \
+                "mnist_{:d}-{:d}-{:s}-{:d}-cnn_{:d}_{:d}-{:s}-{:s}-{:s}" \
                 "-{:s}".format(
                     num_samples, random_seed,
                     # "n" if (normalize) else "0",
@@ -194,7 +194,7 @@ class Visualize(
             )
         else:
             return (
-                "mnist_{:d}-{:d}-{:s}-{:s}-{:d}-mlp_{:s}-{:s}-{:s}-{:s}" \
+                "mnist_{:d}-{:d}-{:s}-{:d}-mlp_{:s}-{:s}-{:s}-{:s}" \
                 "-{:s}".format(
                     num_samples, random_seed,
                     # "n" if (normalize) else "0",
