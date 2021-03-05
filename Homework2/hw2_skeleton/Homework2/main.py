@@ -18,8 +18,6 @@ from structures import rotate, flip
 from models import MNISTClassification
 from models import GInvariantMLP
 from models import StackCNN
-# Remove Before Submission
-import logging
 
 # =============================================================================
 # *****************************************************************************
