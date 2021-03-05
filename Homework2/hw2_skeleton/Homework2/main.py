@@ -734,10 +734,6 @@ class Main(
                 dual_cnn=self.homework_cnn.DualCNN,
                 amprec=self.amprec,
             )
-            logging.basicConfig(filename=self.title + 'nan.log',
-                                filemode='w',
-                                level=logging.DEBUG)
-
         else:
             self.model = GInvariantMLP(
                 self.rng_cpu, self.rng_gpu, self.gradscaler,
