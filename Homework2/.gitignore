@@ -3,6 +3,7 @@ chowdhurymohammadrakin_haider_hw*
 
 # Ignore homework specifications
 hw*.pdf
+!**/images/*.pdf
 hw*.tex
 hw2_skeleton.zip
 
