@@ -296,27 +296,25 @@ class Nesterov(
         # /
         for i, group in enumerate(self.param_groups):
             for j, parameter in enumerate(group['params']):
-                # Gradient Decay.
                 parameter.data.add_(
                     self.velocity[i][j],
                     alpha=-self.momentum,
                 )
         return None
 
+    @torch.no_grad()
     def step(
         self,
         /,
         closure: Optional[Callable[[], float]]=None,
     ) -> Optional[float]:
-        with torch.no_grad():
-            for i, group in enumerate(self.param_groups):
-                for j, parameter in enumerate(group['params']):
-                    # Gradient Decay.
-                    parameter.data.add_(
-                        self.velocity[i][j],
-                        alpha=self.momentum,
-                    )
-
+        for i, group in enumerate(self.param_groups):
+            for j, parameter in enumerate(group['params']):
+                # Gradient Decay.
+                parameter.data.add_(
+                    self.velocity[i][j],
+                    alpha=self.momentum,
+                )
         super(Nesterov, self).step(closure)
         return None
 
