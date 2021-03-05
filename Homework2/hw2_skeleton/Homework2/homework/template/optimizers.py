@@ -186,7 +186,6 @@ class Momentum(
         for group in self.param_groups:
             self.velocity.append([])
             for param in group['params']:
-                print(param.device)
                 vel = torch.zeros(param.shape,
                                   device=param.device)
                 self.velocity[-1].append(vel)
@@ -309,13 +308,15 @@ class Nesterov(
         /,
         closure: Optional[Callable[[], float]]=None,
     ) -> Optional[float]:
-        for i, group in enumerate(self.param_groups):
-            for j, parameter in enumerate(group['params']):
-                # Gradient Decay.
-                parameter.data.add_(
-                    self.velocity[i][j],
-                    alpha=self.momentum,
-                )
+        with torch.no_grad():
+            for i, group in enumerate(self.param_groups):
+                for j, parameter in enumerate(group['params']):
+                    # Gradient Decay.
+                    parameter.data.add_(
+                        self.velocity[i][j],
+                        alpha=self.momentum,
+                    )
+
         super(Nesterov, self).step(closure)
         return None
 
