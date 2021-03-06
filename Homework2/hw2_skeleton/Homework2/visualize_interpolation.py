@@ -1,4 +1,4 @@
-from main import Main
+from basic_main import BasicMain
 import torch
 import math
 import os
@@ -79,7 +79,7 @@ class VisualizeInterpolation(BasicMain):
         self.model.criterion = MNISTClassification.LOSS
 
         interpolate_loss = []
-        alphas = list(torch.arange(0, 1.1, 0.1))
+        alphas = list(torch.arange(0, 1.8, 0.1))
         for alpha in alphas:
             alpha_model = {}
             for k in keys:
