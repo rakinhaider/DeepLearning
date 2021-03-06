@@ -9,9 +9,7 @@ def get_best_criteria(bm, criterion="Train Loss"):
     path = os.path.join("logs", bm.title, "log.pt")
     log = torch.load(path)
     df = pd.DataFrame(log)
-    df = df.sort_values(['Validate Acc'])
-    index = df['Validate Acc'].idxmax(axis=0)
-    return df.loc[index][criterion]
+    return df.loc[100][criterion]
 
 
 if __name__ == "__main__":

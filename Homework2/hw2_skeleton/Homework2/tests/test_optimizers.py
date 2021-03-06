@@ -66,7 +66,7 @@ class TestOptimizer(unittest.TestCase):
         assert torch.equal(parameters.grad, g)
         return None
 
-    def test_nesterov_prev(self):
+    def test_nesterov(self):
         parameters = self._get_test_params()
         parameters = parameters[1]['params'][1]
         g = torch.tensor([[1.0, 2, 3], [4, 5, 6]], requires_grad=False)
@@ -128,28 +128,6 @@ class TestOptimizer(unittest.TestCase):
         assert torch.equal(parameters.grad, g)
 
         return None
-
-    def test_nesterov(self):
-        parameters = self._get_test_params()
-        optim = Nesterov(parameters, lr=0.5, weight_decay=0,
-                         momentum=0.9)
-        optim.step()
-        optim.step()
-
-        results = [{'params': [torch.tensor([0.8550, 1.7100, 2.5650, 3.4200],
-                                            requires_grad=True)]},
-                   {'params': [torch.tensor([3.5500, 12.1000, 15.6500, 19.2000],
-                                            requires_grad=True),
-                               torch.tensor([[-0.4500, -0.9000, -1.3500],
-                                             [-1.8000, -2.2500, -2.7000]],
-                                            requires_grad=True)
-                               ]
-                    }
-                   ]
-
-        for i, g in enumerate(optim.param_groups):
-            for j, p in enumerate(g['params']):
-                assert torch.allclose(results[i]['params'][j], p)
 
     def test_adam(self):
         parameters = self._get_test_params()
