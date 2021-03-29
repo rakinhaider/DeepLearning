@@ -1,16 +1,45 @@
 # Example Command
+	1. The following command will generate all the plots and results in
+	seperate folders. "autograd_training" and "mynn_training" folders will 
+	contain the "Loss vs Epochs" and "Accuracy vs Epochs" curves. 
+	"autograd_learning_curves" and "mynn_learning_curves" will contain the
+	learning curves for shallow networks. The learning curves for deep 
+	networks will be stored inside folders with suffix "_bn". 
+	
+		./run.sh 
+		
+	2. To seperately generate the training "Loss vs Epochs" and 
+	"Accuracy vs Epochs" curves you can use the following commands.
+	
+		python hw1_training.py data/ -e 100 -i torch.autograd -v
+		python hw1_training.py data/ -e 100 -i my -v
 
-    python hw1_training.py data
-    python hw1_learning_curves.py data
+	3. To seperately generate the learning curves for deep and shallow 
+	neural network you can use the following commands. NOTE: '-b' is used
+	to generate learning cureves for deep network and ommitting it will 
+	generate learning curves for the shallow network.
+	
+		python hw1_learning_curves.py data/ -e 100 -n 10000 -i torch.autograd -v -b
+		python hw1_learning_curves.py data/ -e 100 -n 10000 -i torch.autograd -v
+		
+		python hw1_learning_curves.py data/ -e 100 -n 10000 -i my -v -b
+		python hw1_learning_curves.py data/ -e 100 -n 10000 -i my -v
 
+    
 # CS69000-DPL - HW1
 
 Basic neural network with ReLU activations and cross-entropy loss, running on MNIST.
 
 ## How to use
 
- 1. Download data from http://yann.lecun.com/exdb/mnist/. 
- 
- 2. Put the four .gz files in the folder ./data
- 
- 3. Pass the folder as an argument to the demo.py
+	1. The mnist.py file is not changed. It doesn't use the input folder path
+	provided in the command line argument. It downloads the MNIST dataset in 
+	the "../data/" folder with respect to the current directory. That means
+	the data folder will be found in the parent directory of the current 
+	working directory.
+	
+	2. If you try to generate the plots seperately, it may overwrite 
+	previous plots.
+	
+	3. Instead of softmax, stable_softmax is used in neural network 
+	implementation. It was mentioned in Piazza that we are allowed to use it.

@@ -1,0 +1,40 @@
+# Example Command
+	1. The following commands will generate all the results. 	
+	
+		./interface_cnn.sh 
+		./interface_amprec.sh
+		./interface_filters.sh
+		./interface_full_batch.sh 
+		./interface_ginvariant.sh 
+		./interface_mini_batch.sh 
+		./interface_optimizer.sh 
+		./interface_regularizer.sh 
+		
+	2. Or you can use the following command to run all of them. However,
+	it will train the CNN with learning-rate 0.1 where after some iterations
+	the training accuracy falls suddenly to 10%. In the above commands 
+	0.01 is used as learning-rate.
+			./interface.sh
+		
+
+    
+# CS69000-DPL - HW2
+
+Implementation of G-invariant MLP, CNN, and optimizers 
+for MNIST classification.
+
+## How to use
+
+	1. The download.py file is not changed. It downloads the MNIST dataset in 
+	the "../Data/" folder with respect to the current directory. That means
+	the data folder will be found in the parent directory of the current 
+	working directory.
+		
+	2. After 45 iterations of training CNN with the default learning-rate 
+	the training accuracy suddenly falls to 10%. To avoid this problem all the
+	CNNs are trained with 0.01 learning-rate.
+	
+	3. The Nesterov and Momentum optimizers leads to same learning curve. If 
+	we look at the logs they have slightly different accuracies. But the 
+	difference it not visible in the curves. Use test_optimizer.py to test the
+	optimizers. They seem to return expected values.
