@@ -167,7 +167,8 @@ class DenseGCN(
         # /
 
         # Should compute sigmoid([H, diag(e*A)^-1 * A * H] * W + b)
-        e = torch.ones(1, adjacency_input.shape[1], dtype=torch.float32)
+        e = torch.ones(1, adjacency_input.shape[1], dtype=torch.float32,
+                       device=adjacency_input.device)
         adjacency_input = adjacency_input.type(dtype=torch.float32)
         degree_vec = e.matmul(adjacency_input).reshape(-1)
         # print(torch.mean(degree_vec[indices]))
