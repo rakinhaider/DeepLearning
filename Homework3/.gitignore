@@ -2,12 +2,11 @@
 chowdhurymohammadrakin_haider_hw*
 
 # Ignore homework specifications
-hw*.pdf
+CS690_DPL_HW3.pdf
 !**/images/*.pdf
 hw*.tex
-hw2_skeleton.zip
+hw*_skeleton.zip
 
 # Ignore data and log files
 **/Data/*
 **/logs/*
-**/report.pdf
