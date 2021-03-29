@@ -241,7 +241,14 @@ class Visualize(
                 best_valid = scale * col_valid[i]
             else:
                 for key in log.keys():
-                    log[key][i] = log[key][i - 1]
+                    if len(log[key]):
+                        log[key][i] = log[key][i - 1]
+
+        l = len(col_valid)
+        for key in log:
+            if len(log[key]) == 0:
+                log[key] = [0]*l
+
         return log
 
     def visualize_layer(
