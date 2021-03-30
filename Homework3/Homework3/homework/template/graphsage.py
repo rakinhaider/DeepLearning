@@ -1,6 +1,7 @@
 # All imports
 import torch
 import math
+from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 
 
 # =============================================================================
@@ -162,10 +163,26 @@ class SparseGCN(
         # =====================================================================
         # ---------------------------------------------------------------------
         # =====================================================================
-        # /
-        # YOU SHOULD FILL IN THIS PART
-        # /
-        raise NotImplementedError
+        # TODO: simply implement GNN with sparse adjacency list
+        #  create a n*n zero matrix
+        #  use index_add_ to aggregate all the neighbors
+        #  then simply multiply with weight matrix and add bias.
+        dtype = node_feat_input.dtype
+        device = node_feat_input.device
+        n = node_feat_input.shape[0]
+        f = node_feat_input.shape[1]
+        sum_neighbors = torch.zeros((n, f), dtype=dtype, device=device)
+        sum_neighbors.index_add_(0, adjacency_input[:, 0],
+                                 node_feat_input[adjacency_input[:, 1]])
+
+        degree = torch.zeros(n, dtype=dtype, device=device)
+        ones = torch.ones_like(adjacency_input[:, 0],
+                               dtype=dtype, device=device)
+        degree.index_add_(0, adjacency_input[:, 0], ones)
+        H_neigh = torch.diag(1/degree) @ sum_neighbors
+        temp = torch.hstack([node_feat_input, H_neigh]) @ self.weight
+        temp = torch.sigmoid(temp + self.bias)
+        return temp
 
 
 class SparseJanossy(
@@ -350,4 +367,49 @@ class SparseJanossy(
         # /
         # YOU SHOULD FILL IN THIS PART
         # /
-        raise NotImplementedError
+        n = node_feat_input.shape[0]
+        f = node_feat_input.shape[1]
+        dtype = node_feat_input.dtype
+        device = node_feat_input.device
+        n_neighbors = torch.zeros(n, device=device, dtype=torch.int32)
+        h_neigh = torch.zeros(n, f, device=device)
+        if self.training:
+            n_perms = 1
+        else:
+            n_perms = self.num_perms
+
+        neighbor_indices = []
+
+        for i in range(n):
+            edge_indices = (adjacency_input[:, 0] == i)
+            neighbor_indices.append(adjacency_input[edge_indices][:, 1])
+            n_neighbors[i] = len(neighbor_indices[-1])
+
+        for p in range(n_perms):
+            neighbors_feats = []
+            for i in range(n):
+                permutation = torch.randperm(n_neighbors[i].item(), device=device)
+                if n_neighbors[i] >= self.kary:
+                    k_ary_perm = permutation[:self.kary]
+                    selected_neighbors = neighbor_indices[i][k_ary_perm]
+                else:
+                    selected_neighbors = neighbor_indices[i][permutation]
+                neighbors_feats.append(node_feat_input[selected_neighbors])
+
+            padded_neighbors = pad_sequence(neighbors_feats, False,
+                                            padding_value=-1)
+
+            lengths = [self.kary if i >= self.kary else i for i in n_neighbors]
+            packed_neighbors = pack_padded_sequence(padded_neighbors,
+                                                    lengths, False,
+                                                    enforce_sorted=False)
+
+            output, (h_n, c_n) = self.lstm(packed_neighbors)
+            c_n = c_n.reshape(n, f)
+            h_neigh.add_(c_n)
+
+        h_neigh = h_neigh * (1/n_perms)
+        temp = torch.hstack([node_feat_input, h_neigh]) @ self.weight
+        temp += self.bias
+
+        return torch.sigmoid(temp)

@@ -16,7 +16,12 @@ class TestDenseGCN(unittest.TestCase):
         indices = torch.tensor([1, 3])
 
         forward = gcn.forward(node_feat, adjacency_feat, indices)
-        assert forward.shape.__eq__(torch.tensor([2, 2]))
+        print(forward)
+        assert forward.shape.__eq__(torch.tensor([4, 2]))
         assert torch.all(
-            forward == torch.sigmoid(torch.tensor([[3.0, 3], [2, 2]]))
+            forward == torch.sigmoid(torch.tensor([[2.5000, 2.5000],
+                                                   [3.0000, 3.0000],
+                                                   [4.0000, 4.0000],
+                                                   [2.0000, 2.0000]]))
         )
+

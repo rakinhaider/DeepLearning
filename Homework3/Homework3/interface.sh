@@ -9,11 +9,11 @@
 # do not need to write submission commands by yourself.
 # To run on GPU, replace device variable from "cpu" to "cuda".
 sbatch=""
-student="answer"
+student="template"
 datrot="../Data"
 seed="0"
 workers="0"
-device="cuda"
+device="cpu"
 
 
 # Task specified configurations.
