@@ -6,7 +6,7 @@ class TestSparseJanossy(unittest.TestCase):
     def test_forward(self):
         torch.manual_seed(23)
         gcn = SparseJanossy(torch.Generator('cpu'), torch.Generator('cpu'), 2, 2,
-                            kary=5, num_perms=20)
+                            kary=2, num_perms=20)
         gcn.weight = torch.nn.parameter.Parameter(torch.ones_like(gcn.weight))
         gcn.bias = torch.nn.parameter.Parameter(torch.ones_like(gcn.bias))
 

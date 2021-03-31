@@ -3,6 +3,7 @@ import torch
 import math
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 import numpy as np
+import random
 
 
 # =============================================================================
@@ -395,13 +396,15 @@ class SparseJanossy(
         for p in range(n_perms):
             neighbors_feats = []
             for i in range(n):
-                if n_neighbors[i].item() > self.kary:
-                    selected = np.random.choice(neighbor_indices[i],
-                                                self.kary, replace=False)
+                nv = n_neighbors[i].item()
+                if nv >= self.kary:
+                    sel_indices = random.sample(range(nv), self.kary)
+                    sel_indices = torch.tensor(sel_indices, device=device)
                 else:
-                    selected = np.random.choice(neighbor_indices[i],
-                                                n_neighbors[i].item(),
-                                                replace=False)
+                    sel_indices = random.sample(range(nv), nv)
+                    sel_indices = torch.tensor(sel_indices, device=device)
+                selected = neighbor_indices[i][sel_indices]
+                print(selected)
                 neighbors_feats.append(node_feat_input[selected])
 
             padded_neighbors = pad_sequence(neighbors_feats, False,
