@@ -291,7 +291,7 @@ class Main(
 
         # Time limit.
         sbatch_lines.append("#SBATCH --job-name {:s}".format(self.title))
-        sbatch_lines.append("#SBATCH --time=30:00")
+        sbatch_lines.append("#SBATCH --time=60:00")
 
         # IO redirection.
         sbatch_lines.append(

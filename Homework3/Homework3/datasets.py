@@ -649,4 +649,5 @@ class PTBDataset(
                     else:
                         word_int = self.word_str2int[self.OOV]
                     seq.append(word_int)
+                seq.append(self.word_str2int[self.EOS])
         return seq

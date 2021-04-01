@@ -404,7 +404,6 @@ class SparseJanossy(
                     sel_indices = random.sample(range(nv), nv)
                     sel_indices = torch.tensor(sel_indices, device=device)
                 selected = neighbor_indices[i][sel_indices]
-                print(selected)
                 neighbors_feats.append(node_feat_input[selected])
 
             padded_neighbors = pad_sequence(neighbors_feats, False,
