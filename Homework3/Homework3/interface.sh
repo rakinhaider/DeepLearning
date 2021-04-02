@@ -77,7 +77,7 @@ done
 
 
 # Task specified configurations.
-epochs="1"
+epochs="10"
 
 
 # T-BPTT.

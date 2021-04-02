@@ -549,7 +549,11 @@ class PTBDataStructure(
         else:
             # Locate the chunk boundaries.
             inf = self.truncate * i
+            # print(self.num_chunks)
+            # print(i, self.truncate, self.length // self.batch_size)
             sup = min(inf + self.truncate, self.length // self.batch_size)
+            # print(self.input.shape)
+            # print(inf, sup)
             input = self.input[inf:sup]
             target = self.target[inf:sup]
             return input, target
@@ -640,7 +644,6 @@ class PTBDataStructure(
                 self.length, self.input, self.target,
                 self.batch_size, self.truncate,
             )
-
         # Remove raw data.
         self.memory.memory[index] = torch.Tensor([0])
 
