@@ -241,14 +241,7 @@ class Visualize(
                 best_valid = scale * col_valid[i]
             else:
                 for key in log.keys():
-                    if len(log[key]):
-                        log[key][i] = log[key][i - 1]
-
-        l = len(col_valid)
-        for key in log:
-            if len(log[key]) == 0:
-                log[key] = [0]*l
-
+                    log[key][i] = log[key][i - 1]
         return log
 
     def visualize_layer(
@@ -302,8 +295,16 @@ class Visualize(
                 ),
                 "log.pt",
             )
+            log = torch.load(path)
+            log = {
+                "Validate Loss": log["Validate Loss"],
+                "Validate Acc": log["Validate Acc"],
+                "Test Loss": log["Test Loss"],
+                "Test Acc": log["Test Acc"],
+                "Optimize Time": log["Optimize Time"],
+            }
             df = pd.DataFrame(
-                self.pseudo_early_stop(torch.load(path), "Acc", -1),
+                self.pseudo_early_stop(log, "Acc", -1),
             )
 
             # Hide the initialization.
@@ -441,8 +442,16 @@ class Visualize(
                 ),
                 "log.pt",
             )
+            log = torch.load(path)
+            log = {
+                "Validate Loss": log["Validate Loss"],
+                "Validate Acc": log["Validate Acc"],
+                "Test Loss": log["Test Loss"],
+                "Test Acc": log["Test Acc"],
+                "Optimize Time": log["Optimize Time"],
+            }
             df = pd.DataFrame(
-                self.pseudo_early_stop(torch.load(path), "Acc", -1),
+                self.pseudo_early_stop(log, "Acc", -1),
             )
 
             # Hide the initialization.
@@ -575,8 +584,16 @@ class Visualize(
                 ),
                 "log.pt",
             )
+            log = torch.load(path)
+            log = {
+                "Validate Loss": log["Validate Loss"],
+                "Validate Acc": log["Validate Acc"],
+                "Test Loss": log["Test Loss"],
+                "Test Acc": log["Test Acc"],
+                "Optimize Time": log["Optimize Time"],
+            }
             df = pd.DataFrame(
-                self.pseudo_early_stop(torch.load(path), "Loss", 1),
+                self.pseudo_early_stop(log, "Loss", 1),
             )
 
             # Hide the initialization.

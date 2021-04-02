@@ -4,7 +4,7 @@ import math
 from typing import cast
 from typing import Union
 from typing import Tuple
-
+import math
 
 # =============================================================================
 # *****************************************************************************
@@ -62,7 +62,22 @@ def t_bptt_preprocess(
     # /
     # YOU SHOULD FILL IN THIS PART
     # /
-    raise NotImplementedError
+    seq_len = (length - 1) // batch_size
+    input = input[:seq_len * batch_size]
+    target = target[:seq_len * batch_size]
+
+    input = input.reshape((batch_size, seq_len)).t()
+    target = target.reshape((batch_size, seq_len)).t()
+
+    num_chunks = math.ceil(seq_len / truncate)
+    input = input.contiguous()
+    target = target.contiguous()
+    print('seq_len', seq_len)
+    print('length', length)
+    print('input.shape', input.shape)
+    print('target.shape', target.shape)
+    print('num_chunks', num_chunks)
+    return length, input, target, num_chunks
 
 
 class LSTM(
@@ -260,6 +275,7 @@ class LSTM(
 
         # Feed into decoder.
         output = self.decode.forward(word_feats)
+        # raise NotImplementedError
         return output
 
     def clear(

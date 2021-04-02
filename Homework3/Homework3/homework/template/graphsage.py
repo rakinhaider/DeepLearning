@@ -1,6 +1,9 @@
 # All imports
 import torch
 import math
+from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
+import numpy as np
+import random
 
 
 # =============================================================================
@@ -19,14 +22,15 @@ class SparseGCN(
     r"""
     GCN for sparse adjacency input.
     """
+
     # =========================================================================
     # -------------------------------------------------------------------------
     # =========================================================================
     def __init__(
-        self,
-        rng_cpu: torch.Generator, rng_gpu: torch.Generator,
-        num_inputs: int, num_outputs: int,
-        /,
+            self,
+            rng_cpu: torch.Generator, rng_gpu: torch.Generator,
+            num_inputs: int, num_outputs: int,
+            /,
     ) -> None:
         r"""
         Initialize the class.
@@ -73,9 +77,9 @@ class SparseGCN(
 
     @staticmethod
     def xaiver_uniform(
-        parameter: torch.Tensor, rng: torch.Generator,
-        num_inputs: int, num_outputs: int,
-        /,
+            parameter: torch.Tensor, rng: torch.Generator,
+            num_inputs: int, num_outputs: int,
+            /,
     ) -> None:
         r"""
         Initialize given parameter by Xaiver uniform initialization.
@@ -110,9 +114,9 @@ class SparseGCN(
         )
 
     def initialize(
-        self,
-        rng_cpu: torch.Generator,
-        /,
+            self,
+            rng_cpu: torch.Generator,
+            /,
     ) -> None:
         r"""
         Initialize.
@@ -137,10 +141,10 @@ class SparseGCN(
         )
 
     def forward(
-        self,
-        node_feat_input: torch.Tensor, adjacency_input: torch.Tensor,
-        indices: torch.Tensor,
-        /,
+            self,
+            node_feat_input: torch.Tensor, adjacency_input: torch.Tensor,
+            indices: torch.Tensor,
+            /,
     ) -> torch.Tensor:
         r"""
         Forward.
@@ -162,10 +166,26 @@ class SparseGCN(
         # =====================================================================
         # ---------------------------------------------------------------------
         # =====================================================================
-        # /
-        # YOU SHOULD FILL IN THIS PART
-        # /
-        raise NotImplementedError
+        # TODO: simply implement GNN with sparse adjacency list
+        #  create a n*n zero matrix
+        #  use index_add_ to aggregate all the neighbors
+        #  then simply multiply with weight matrix and add bias.
+        dtype = node_feat_input.dtype
+        device = node_feat_input.device
+        n = node_feat_input.shape[0]
+        f = node_feat_input.shape[1]
+        sum_neighbors = torch.zeros((n, f), dtype=dtype, device=device)
+        sum_neighbors.index_add_(0, adjacency_input[:, 0],
+                                 node_feat_input[adjacency_input[:, 1]])
+
+        degree = torch.zeros(n, dtype=dtype, device=device)
+        ones = torch.ones_like(adjacency_input[:, 0],
+                               dtype=dtype, device=device)
+        degree.index_add_(0, adjacency_input[:, 0], ones)
+        H_neigh = torch.diag(1 / degree) @ sum_neighbors
+        temp = torch.hstack([node_feat_input, H_neigh]) @ self.weight
+        temp = torch.sigmoid(temp + self.bias)
+        return temp
 
 
 class SparseJanossy(
@@ -175,16 +195,17 @@ class SparseJanossy(
     r"""
     Janossy Pooling for sparse adjacency input.
     """
+
     # =========================================================================
     # -------------------------------------------------------------------------
     # =========================================================================
     def __init__(
-        self,
-        rng_cpu: torch.Generator, rng_gpu: torch.Generator,
-        num_inputs: int, num_outputs: int,
-        /,
-        *,
-        kary: int, num_perms: int,
+            self,
+            rng_cpu: torch.Generator, rng_gpu: torch.Generator,
+            num_inputs: int, num_outputs: int,
+            /,
+            *,
+            kary: int, num_perms: int,
     ) -> None:
         r"""
         Initialize the class.
@@ -240,9 +261,9 @@ class SparseJanossy(
 
     @staticmethod
     def xaiver_uniform(
-        parameter: torch.Tensor, rng: torch.Generator,
-        num_inputs: int, num_outputs: int,
-        /,
+            parameter: torch.Tensor, rng: torch.Generator,
+            num_inputs: int, num_outputs: int,
+            /,
     ) -> None:
         r"""
         Initialize given parameter by Xaiver uniform initialization.
@@ -277,9 +298,9 @@ class SparseJanossy(
         )
 
     def initialize(
-        self,
-        rng_cpu: torch.Generator,
-        /,
+            self,
+            rng_cpu: torch.Generator,
+            /,
     ) -> None:
         r"""
         Initialize.
@@ -322,10 +343,10 @@ class SparseJanossy(
         )
 
     def forward(
-        self,
-        node_feat_input: torch.Tensor, adjacency_input: torch.Tensor,
-        indices: torch.Tensor,
-        /,
+            self,
+            node_feat_input: torch.Tensor, adjacency_input: torch.Tensor,
+            indices: torch.Tensor,
+            /,
     ) -> torch.Tensor:
         r"""
         Forward.
@@ -350,4 +371,54 @@ class SparseJanossy(
         # /
         # YOU SHOULD FILL IN THIS PART
         # /
-        raise NotImplementedError
+        n = node_feat_input.shape[0]
+        f = node_feat_input.shape[1]
+        dtype = node_feat_input.dtype
+        device = node_feat_input.device
+        n_neighbors = torch.zeros(n, device=device, dtype=torch.int32)
+        h_neigh = torch.zeros(n, f, device=device)
+        if self.training:
+            n_perms = 1
+        else:
+            n_perms = self.num_perms
+
+        neighbor_indices = []
+        lengths = []
+        for i in range(n):
+            edge_indices = (adjacency_input[:, 0] == i)
+            neighbor_indices.append(adjacency_input[edge_indices][:, 1])
+            n_neighbors[i] = len(neighbor_indices[-1])
+            if n_neighbors[i] >= self.kary:
+                lengths.append(self.kary)
+            else:
+                lengths.append(n_neighbors[i].item())
+
+        for p in range(n_perms):
+            neighbors_feats = []
+            for i in range(n):
+                nv = n_neighbors[i].item()
+                if nv >= self.kary:
+                    sel_indices = random.sample(range(nv), self.kary)
+                    sel_indices = torch.tensor(sel_indices, device=device)
+                else:
+                    sel_indices = random.sample(range(nv), nv)
+                    sel_indices = torch.tensor(sel_indices, device=device)
+                selected = neighbor_indices[i][sel_indices]
+                neighbors_feats.append(node_feat_input[selected])
+
+            padded_neighbors = pad_sequence(neighbors_feats, False,
+                                            padding_value=-1)
+
+            packed_neighbors = pack_padded_sequence(padded_neighbors,
+                                                    lengths, False,
+                                                    enforce_sorted=False)
+
+            output, (h_n, c_n) = self.lstm(packed_neighbors)
+            c_n = c_n.reshape(n, f)
+            h_neigh.add_(c_n)
+
+        h_neigh = h_neigh * (1 / n_perms)
+        temp = torch.hstack([node_feat_input, h_neigh]) @ self.weight
+        temp += self.bias
+
+        return torch.sigmoid(temp)

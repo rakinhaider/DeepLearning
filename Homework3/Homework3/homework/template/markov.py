@@ -134,10 +134,18 @@ class Markov(
 
         # Update only for training.
         if (self.training):
-            # /
-            # YOU SHOULD FILL IN THIS PART
-            # /
-            raise NotImplementedError
+            for i in range(self.order, length+self.order):
+                c = tuple(observations[i - self.order:i])
+                w = observations[i]
+                if c not in self.totals:
+                    self.totals[c] = 1
+                    self.states[c] = {}
+                else:
+                    self.totals[c] += 1
+                self.states[c][w] = self.states[c].get(w, 0) + 1
+
+            # print(self.totals)
+            # print(self.states)
         else:
             pass
 
@@ -145,13 +153,37 @@ class Markov(
         # /
         # YOU SHOULD FILL IN THIS PART
         # /
-        raise NotImplementedError
+        unknowns = dict()
+        # all_words = set([i for i in range(self.num_words)])
+        for c in self.totals:
+            # unknowns[c] = all_words.difference(self.states[c].keys())
+            unknowns[c] = self.num_words - len(self.states[c].keys())
+        for i in range(self.order, length + self.order):
+            c = tuple(observations[i - self.order:i])
+            if c not in unknowns:
+                # unknowns[c] = all_words
+                unknowns[c] = self.num_words
 
         # Direct indexing to get probability predictions.
         # /
         # YOU SHOULD FILL IN THIS PART
         # /
-        raise NotImplementedError
+        estimations = torch.zeros(length, device=input.device)
+        for i in range(self.order, length + self.order):
+            c = tuple(observations[i - self.order:i])
+            w = observations[i]
+            ct_total = self.totals.get(c, 0) + 1
+            if ct_total == 1:
+                ct_w = 0
+            else:
+                ct_w = self.states[c].get(w, 0)
+            if ct_w > 0:
+                estimations[i - self.order] = ct_w / ct_total
+            else:
+                # predictions[i - self.order] = 1 / (ct_total * len(unknowns[c]))
+                estimations[i - self.order] = 1 / (ct_total * unknowns[c])
+
+        return estimations
 
     def clear(
         self,

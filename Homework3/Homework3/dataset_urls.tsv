@@ -1,5 +1,5 @@
-cora.content    https://raw.githubusercontent.com/tkipf/pygcn/master/data/cora/ cora/
-cora.cites  https://raw.githubusercontent.com/tkipf/pygcn/master/data/cora/ cora/
+cora.content    https://raw.githubusercontent.com/tkipf/pygcn/master/data/cora/ Cora/
+cora.cites  https://raw.githubusercontent.com/tkipf/pygcn/master/data/cora/ Cora/
 ptb.char.test.txt   https://raw.githubusercontent.com/gao462/PennTreebank/master/   PTB/
 ptb.char.train.txt  https://raw.githubusercontent.com/gao462/PennTreebank/master/   PTB/
 ptb.char.valid.txt  https://raw.githubusercontent.com/gao462/PennTreebank/master/   PTB/

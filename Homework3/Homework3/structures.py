@@ -640,7 +640,6 @@ class PTBDataStructure(
                 self.length, self.input, self.target,
                 self.batch_size, self.truncate,
             )
-
         # Remove raw data.
         self.memory.memory[index] = torch.Tensor([0])
 
