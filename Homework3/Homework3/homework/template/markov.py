@@ -168,7 +168,7 @@ class Markov(
         # /
         # YOU SHOULD FILL IN THIS PART
         # /
-        predictions = torch.zeros(length, device=input.device)
+        estimations = torch.zeros(length, device=input.device)
         for i in range(self.order, length + self.order):
             c = tuple(observations[i - self.order:i])
             w = observations[i]
@@ -178,12 +178,12 @@ class Markov(
             else:
                 ct_w = self.states[c].get(w, 0)
             if ct_w > 0:
-                predictions[i - self.order] = ct_w / ct_total
+                estimations[i - self.order] = ct_w / ct_total
             else:
                 # predictions[i - self.order] = 1 / (ct_total * len(unknowns[c]))
-                predictions[i - self.order] = 1 / (ct_total * unknowns[c])
+                estimations[i - self.order] = 1 / (ct_total * unknowns[c])
 
-        return predictions
+        return estimations
 
     def clear(
         self,
