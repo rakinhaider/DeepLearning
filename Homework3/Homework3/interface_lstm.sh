@@ -20,7 +20,7 @@ epochs="10"
 
 
 # T-BPTT.
-for t in 5; do
+for t in 5 35 80; do
     python main.py --ptb ${sbatch} --student ${student} \
         --data ${datrot}/PTB --random-seed ${seed} \
         --batch-size 20 --truncate ${t} --num-workers ${workers} \
