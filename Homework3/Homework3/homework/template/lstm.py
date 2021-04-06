@@ -65,6 +65,7 @@ def t_bptt_preprocess(
     seq_len = (length - 1) // batch_size
     input = input[:seq_len * batch_size]
     target = target[:seq_len * batch_size]
+    length = seq_len * batch_size
 
     input = input.reshape((batch_size, seq_len)).t()
     target = target.reshape((batch_size, seq_len)).t()
