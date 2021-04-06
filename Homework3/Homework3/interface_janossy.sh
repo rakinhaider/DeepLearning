@@ -21,12 +21,12 @@ epochs="100"
 
 
 # 2-layer Sparse Janossy.
-# python main.py --cora ${sbatch} --student ${student} \
-#     --data ${datrot}/Cora --random-seed ${seed} \
-#     --batch-size -1 --truncate 0 --num-workers ${workers} \
-#     --num-internals 16 --num-graph-layers 2 --num-perms 1 --janossy \
-#     --learning-rate 0.01 --weight-decay 5e-5 --clip inf \
-#     --num-epochs ${epochs} --device ${device}
+python main.py --cora ${sbatch} --student ${student} \
+     --data ${datrot}/Cora --random-seed ${seed} \
+     --batch-size -1 --truncate 0 --num-workers ${workers} \
+     --num-internals 16 --num-graph-layers 2 --num-perms 1 --janossy \
+     --learning-rate 0.01 --weight-decay 5e-5 --clip inf \
+     --num-epochs ${epochs} --device ${device}
 
 epochs="100"
 
