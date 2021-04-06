@@ -397,12 +397,16 @@ class SparseJanossy(
             neighbors_feats = []
             for i in range(n):
                 nv = n_neighbors[i].item()
+                """
                 if nv >= self.kary:
                     sel_indices = random.sample(range(nv), self.kary)
                     sel_indices = torch.tensor(sel_indices, device=device)
                 else:
                     sel_indices = random.sample(range(nv), nv)
                     sel_indices = torch.tensor(sel_indices, device=device)
+                """
+                sel_indices = torch.randperm(nv, device=device)
+                sel_indices = sel_indices[:self.kary]
                 selected = neighbor_indices[i][sel_indices]
                 neighbors_feats.append(node_feat_input[selected])
 
