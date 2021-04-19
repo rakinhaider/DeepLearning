@@ -1,0 +1,10 @@
+#!/bin/bash
+#SBATCH -A scholar
+#SBATCH --cpus-per-task=3
+#SBATCH --nodes=1
+#SBATCH --job-name MMD_0_20
+#SBATCH --time=60:00
+#SBATCH --output logs\MMD_0_20\output
+#SBATCH --error logs\MMD_0_20\error
+
+python hw5.py --reg_str 0 -gpu 0
