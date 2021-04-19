@@ -8,16 +8,16 @@
 # It will automatically generate `sbatch` submission file and submit, so you
 # do not need to write submission commands by yourself.
 # To run on GPU, replace device variable from "cpu" to "cuda".
-sbatch=""
+sbatch="--sbatch"
 student="template"
 datrot="../Data"
 seed="0"
 workers="0"
-device="cpu"
+device="cuda"
 
 
 # Task specified configurations.
-epochs="1"
+epochs="100"
 
 
 # 2-layer Dense GCN.

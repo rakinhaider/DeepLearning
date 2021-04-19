@@ -1,0 +1,18 @@
+# Example Command
+	1. The following commands will generate all the results. 	
+	
+		./interface.sh 	
+
+    
+# CS69000-DPL - HW3
+
+Implementation of DenseGCN, SparseGCN, SparseJanossy, Markov, LSTM.
+
+## How to use
+
+	1. The SparseJanossy implementation cannot complete 100 epochs in 30 mins on GPU. Therefore, to run and generate the results of SparseJanossy (specially with 20 permutations) the sbatch time have to be increased to 60 mins.
+	
+	2. The download.py file is not changed. It downloads the MNIST dataset in 
+	the "../Data/" folder with respect to the current directory. That means
+	the data folder will be found in the parent directory of the current 
+	working directory.
