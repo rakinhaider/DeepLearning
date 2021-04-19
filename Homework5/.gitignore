@@ -11,3 +11,4 @@ hw*_skeleton.zip
 # Ignore data and log files
 **/data/*
 **/logs/*
+**/model.pth
