@@ -69,7 +69,9 @@ if __name__ == '__main__':
     torch.manual_seed(42)
 
     # Get the data
+    print('preparing dataset', flush=True)
     loaders = prepare_data(args.dataset, args.batch_size)
+    print('preparing dataset ends', flush=True)
 
     # Initial (random) model
     random_model = CNN()
@@ -91,12 +93,14 @@ if __name__ == '__main__':
     # Training loop
     losses = []
     accuracies = []
+    print('training loop starts')
     for epoch in range(args.num_epochs):
         timer_start = time.time()
 
         # Train the model for one epoch
         avg_batch_loss = None
         for batch_no, ((X_source, y_source), (X_target, _)) in enumerate(zip(loaders['source']['train'], loaders['target']['train'])):
+            print('Batch {} of Epoch {}'.format(batch_no, epoch), flush=True)
             batch_loss = train_one_batch(optimizer, model, X_source, y_source, X_target, args.reg_str, args.kernel_sigma, device)
 
             # Exponential average of the batch loss
