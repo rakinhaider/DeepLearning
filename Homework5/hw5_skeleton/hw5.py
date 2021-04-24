@@ -97,6 +97,7 @@ if __name__ == '__main__':
         # Train the model for one epoch
         avg_batch_loss = None
         for batch_no, ((X_source, y_source), (X_target, _)) in enumerate(zip(loaders['source']['train'], loaders['target']['train'])):
+            # print('Batch {} Epoch {}'.format(batch_no, epoch), flush=True)
             batch_loss = train_one_batch(optimizer, model, X_source, y_source, X_target, args.reg_str, args.kernel_sigma, device)
 
             # Exponential average of the batch loss
@@ -127,7 +128,7 @@ if __name__ == '__main__':
         accuracies.append(source_validation_accuracy)
 
         better = "*" if found_better else " "
-        print(f"[Epoch {epoch:3d}] Avg. batch loss: {avg_batch_loss:6.3e} :: Val. Acc (Src -> Tgt) {source_validation_accuracy:4.1f} % -> {target_validation_accuracy:4.1f} % [Time: {train_time + eval_time:4.1f} ({train_time:4.1f}) s] [{better}]")
+        print(f"[Epoch {epoch:3d}] Avg. batch loss: {avg_batch_loss:6.3e} :: Val. Acc (Src -> Tgt) {source_validation_accuracy:4.1f} % -> {target_validation_accuracy:4.1f} % [Time: {train_time + eval_time:4.1f} ({train_time:4.1f}) s] [{better}]", flush=True)
 
     model.load_state_dict(best_model)
     model = model.to(device)
