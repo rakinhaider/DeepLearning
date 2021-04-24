@@ -71,4 +71,4 @@ def compute_mmd(X, Y, sigma):
     mmd = first_term + second_term - 2*third_term
     # >>>>> YOUR CODE ENDS HERE <<<<<
 
-    return mmd.data.item()
+    return mmd
