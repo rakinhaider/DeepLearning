@@ -83,7 +83,7 @@ def prepare_data(data_folder, batch_size):
     test_args = dict(batch_size=1024, pin_memory=True, drop_last=False, shuffle=False, num_workers=4)
 
     # Build the data loaders
-
+    print('building data loaders')
     source_train_loader = torch.utils.data.DataLoader(source_train_dataset, **train_args)
     source_validation_loader = torch.utils.data.DataLoader(source_validation_dataset, **test_args)
     source_test_loader = torch.utils.data.DataLoader(source_test_dataset, **test_args)
@@ -91,6 +91,7 @@ def prepare_data(data_folder, batch_size):
     target_train_loader = torch.utils.data.DataLoader(target_train_dataset, **train_args)
     target_validation_loader = torch.utils.data.DataLoader(target_validation_dataset, **test_args)
     target_test_loader = torch.utils.data.DataLoader(target_test_dataset, **test_args)
+    print('building data loaders ends')
 
     return {
         'source': {
